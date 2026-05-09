@@ -129,6 +129,10 @@ AstroPUP/
 │   ├── HARDWARE_TEST_CHECKLIST.md
 │   └── HEARTBEAT_GUIDE.md
 ├── examples/
+│   ├── astrogenius_style_bridge/
+│   │   ├── hub_read_example.py
+│   │   ├── README.md
+│   │   └── sensor_lms_main_example.py
 │   ├── basic_sensor/
 │   │   ├── hub_main.py
 │   │   ├── README.md
@@ -140,10 +144,6 @@ AstroPUP/
 │   ├── pybricks_multitask_hub/
 │   │   ├── hub_main.py
 │   │   └── README.md
-│   ├── saturn_style_bridge/
-│   │   ├── hub_read_example.py
-│   │   ├── README.md
-│   │   └── sensor_lms_main_example.py
 │   ├── startup_diagnostics/
 │   │   ├── hub_main.py
 │   │   └── README.md
