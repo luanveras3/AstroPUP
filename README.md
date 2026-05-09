@@ -15,6 +15,7 @@
   <img src="https://img.shields.io/badge/status-active%20development-orange.svg" alt="Status: Active Development">
   <img src="https://img.shields.io/badge/Pybricks-compatible-brightgreen.svg" alt="Pybricks Compatible">
   <img src="https://img.shields.io/badge/MicroPython-supported-green.svg" alt="MicroPython Supported">
+  <img src="https://github.com/luanveras3/AstroPUP/actions/workflows/tests.yml/badge.svg" alt="AstroPUP Tests">
 </p>
 
 <p align="center">
@@ -43,6 +44,27 @@ It adds a higher-level layer for:
 - optional heartbeat / stale-data detection
 
 ---
+## Testing
+
+AstroPUP includes automated tests for its internal safety and diagnostic logic.
+
+These tests run on GitHub Actions and validate features such as:
+
+- module imports
+- command order helpers
+- heartbeat / stale-data tracking
+- sensor-side frame ID helpers
+
+Run the tests locally with:
+
+```bash
+pytest -q
+```
+Automated tests do not replace real hardware validation.
+
+LPF2 / Powered Up communication with a LEGO hub and an external MicroPython device must still be tested with real hardware. See:
+`docs/HARDWARE_TEST_CHECKLIST.md`
+
 
 ## Communication model
 
