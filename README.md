@@ -55,7 +55,6 @@ Your project-specific logic should stay in your own files, such as:
 - `robot.py`;
 - `sensors.py`;
 - `my_robot_profile.py`;
-- `saturn_profile.py`.
 
 ## Foundation and attribution
 
