@@ -1,0 +1,15 @@
+GPL-3.0 License Notice
+
+AstroPUP contains code derived from PUPRemote by Anton's Mindstorms.
+
+Original project:
+https://github.com/antonvh/PUPRemote
+
+PUPRemote is distributed under the GPL / GPL-3.0 license.
+
+AstroPUP keeps attribution to the original project and is intended to be distributed under GPL-3.0-compatible terms.
+
+For the full GPL-3.0 license text, see:
+https://www.gnu.org/licenses/gpl-3.0.txt
+
+SPDX-License-Identifier: GPL-3.0-or-later
