@@ -5,8 +5,7 @@ The format is inspired by [Keep a Changelog](https://keepachangelog.com/), and t
 
 ---
 
-## v0.3.1 - Unreleased
-
+## v0.3.1
 ### Added
 
 - Added automated tests with `pytest`.
