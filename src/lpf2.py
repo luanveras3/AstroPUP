@@ -1,9 +1,20 @@
-# LPF2 class allows communication between LEGO SPIKE Prime and third party devices.
-__author__ = "Anton Vanhoucke & Ste7an"
-__copyright__ = "Copyright 2023, 2024 AntonsMindstorms.com"
-__license__ = "GPL"
-__version__ = "1.5"
-__status__ = "Production"
+# ============================================================
+# LPF2 Foundation for AstroPUP
+# ============================================================
+#
+# This file is included for external MicroPython devices that
+# do not already provide lpf2.py.
+#
+# It is based on the LPF2 implementation from PUPRemote by
+# Anton's Mindstorms.
+#
+# Original project:
+# https://github.com/antonvh/PUPRemote
+#
+# AstroPUP does not change the LPF2 protocol in this file.
+# It is provided as a dependency for astropup_sensor.py.
+#
+# ============================================================
 
 import machine
 import struct
