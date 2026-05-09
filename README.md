@@ -46,25 +46,17 @@ It adds a higher-level layer for:
 ---
 ## Testing
 
-AstroPUP includes automated tests for its internal safety and diagnostic logic.
+AstroPUP includes automated tests for internal logic using `pytest` and GitHub Actions.
 
-These tests run on GitHub Actions and validate features such as:
+These tests validate imports, heartbeat tracking, command order helpers, and sensor-side frame ID helpers.
 
-- module imports
-- command order helpers
-- heartbeat / stale-data tracking
-- sensor-side frame ID helpers
+Automated tests do not replace real LPF2 / Powered Up hardware validation.
 
-Run the tests locally with:
+For real hardware validation, see:
 
-```bash
-pytest -q
 ```
-Automated tests do not replace real hardware validation.
-
-LPF2 / Powered Up communication with a LEGO hub and an external MicroPython device must still be tested with real hardware. See:
-`docs/HARDWARE_TEST_CHECKLIST.md`
-
+docs/HARDWARE_TEST_CHECKLIST.md
+```
 
 ## Communication model
 
