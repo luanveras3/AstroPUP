@@ -1,12 +1,27 @@
+<p align="center">
+  <img src="assets/astrogenius-logo.png" alt="Astrogenius Team Logo" width="180">
+</p>
+
+<h1 align="center">AstroPUP</h1>
+
+<p align="center">
+  Generic communication helper for LEGO Pybricks hubs and external MicroPython devices.
+</p>
+
+<p align="center">
+  Built by Astrogenius Team from Brazil 🇧🇷
+</p>
+
 # AstroPUP
 
 **AstroPUP** is a generic, competition-oriented communication helper for LEGO Pybricks hubs and external MicroPython devices.
 
 It is designed for educational robotics, competition robots, and custom LPF2 / Powered Up sensor bridges.
 
-AstroPUP is developed by **Astrogenius - Brazil**.
-
-Team Instagram: **@astrogenius.team**
+<p align="center">
+  Developed by <strong>Astrogenius Team - Brazil</strong><br>
+  Instagram: <a href="https://www.instagram.com/astrogenius.team">@astrogenius.team</a>
+</p>
 
 ## What AstroPUP does
 
