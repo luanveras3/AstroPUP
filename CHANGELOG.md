@@ -1,4 +1,32 @@
 # Changelog
+All notable changes to AstroPUP will be documented in this file.
+
+The format is inspired by [Keep a Changelog](https://keepachangelog.com/), and this project follows GPL-3.0-compatible licensing due to its PUPRemote foundation.
+
+---
+
+## v0.3.1 - Unreleased
+
+### Added
+
+- Added automated tests with `pytest`.
+- Added GitHub Actions workflow for continuous testing.
+- Added hardware validation checklist in `docs/HARDWARE_TEST_CHECKLIST.md`.
+- Added basic import tests for AstroPUP modules.
+- Added tests for heartbeat / stale-data tracking.
+- Added tests for sensor-side frame ID helpers.
+- Added tests for command order helper behavior.
+
+### Fixed
+
+- Removed or fixed unresolved `Any` type annotation in `astropup_hub.py` to improve CPython test compatibility while keeping MicroPython / Pybricks compatibility.
+
+### Notes
+
+- Automated tests validate AstroPUP's internal logic only.
+- Real LPF2 / Powered Up communication must still be tested with physical hardware.
+
+---
 
 ## v0.3.0
 
