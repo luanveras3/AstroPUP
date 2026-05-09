@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/astrogenius_logo.png" alt="Astrogenius Team Logo" width="180">
+  <img src="assets/astrogenius-logo.png" alt="Astrogenius Team Logo" width="180">
 </p>
 
 <h1 align="center">AstroPUP</h1>
@@ -9,19 +9,21 @@
 </p>
 
 <p align="center">
-  Built by Astrogenius Team from Brazil 🇧🇷
+  Built by <strong>Astrogenius Team from Brazil</strong> 🇧🇷<br>
+  Instagram: <a href="https://www.instagram.com/astrogenius.team">@astrogenius.team</a>
 </p>
 
-# AstroPUP
+---
+
+## What is AstroPUP?
 
 **AstroPUP** is a generic, competition-oriented communication helper for LEGO Pybricks hubs and external MicroPython devices.
 
 It is designed for educational robotics, competition robots, and custom LPF2 / Powered Up sensor bridges.
 
-<p align="center">
-  Developed by <strong>Astrogenius Team - Brazil</strong><br>
-  Instagram: <a href="https://www.instagram.com/astrogenius.team">@astrogenius.team</a>
-</p>
+AstroPUP is built on top of the PUPRemote communication foundation and adds safer calls, clearer diagnostics, startup checks, counters, and optional heartbeat / stale-data detection.
+
+---
 
 ## What AstroPUP does
 
@@ -41,6 +43,8 @@ It adds:
 - generic command registration helpers;
 - readable diagnostics for students, mentors, and teams.
 
+---
+
 ## What AstroPUP does not do
 
 AstroPUP does **not** replace the LPF2 / Powered Up protocol.
@@ -55,6 +59,9 @@ Your project-specific logic should stay in your own files, such as:
 - `robot.py`;
 - `sensors.py`;
 - `my_robot_profile.py`;
+- `saturn_profile.py`.
+
+---
 
 ## Foundation and attribution
 
@@ -66,7 +73,9 @@ https://github.com/antonvh/PUPRemote
 
 AstroPUP keeps attribution to the original project and adds Astrogenius-specific improvements on top.
 
-## Files
+---
+
+## Repository structure
 
 ```text
 src/
@@ -77,11 +86,14 @@ docs/
   HEARTBEAT_GUIDE.md
 
 examples/
-  basic_sensor/
-  basic_sync_hub/
-  pybricks_multitask_hub/
-  saturn_heartbeat_example/
+  00_basic_sensor/
+  01_startup_diagnostics/
+  02_pybricks_multitask_hub/
+  03_heartbeat_stale_demo/
+  04_saturn_style_bridge/
 ```
+
+---
 
 ## Basic sensor-side example
 
@@ -105,6 +117,8 @@ while True:
     sensor.safe_process()
 ```
 
+---
+
 ## Basic hub-side example
 
 ```python
@@ -127,6 +141,8 @@ while True:
 
     wait(100)
 ```
+
+---
 
 ## Optional heartbeat / stale-data tracking
 
@@ -158,6 +174,8 @@ if data is not None:
     print("stale_count:", link.stale_count())
 ```
 
+---
+
 ## Important rule
 
 The hub side and the sensor side must register commands in the same:
@@ -182,9 +200,13 @@ link.add_command("reset", "B")
 link.add_command("state", "hh")
 ```
 
+---
+
 ## Version
 
 Current development version: **v0.3.0**
+
+---
 
 ## License
 
