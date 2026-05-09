@@ -1,6 +1,4 @@
-# AstroPUP Better Examples
-
-These examples are meant to replace the first simple examples in the repository.
+# AstroPUP Examples
 
 Important:
 
@@ -15,8 +13,8 @@ Recommended repository fix before using these examples:
 
 Example order:
 
-1. `00_basic_counter_pair` — simplest complete pair: external sensor + Pybricks hub.
-2. `01_startup_diagnostics` — shows startup_report and mode validation.
-3. `02_pybricks_multitask_reader` — safe_call_multitask example.
-4. `03_heartbeat_stale_demo` — proves heartbeat/stale-data detection.
-5. `04_saturn_style_bridge` — project-style example based on a line sensor + external values packet.
+1. Basic_sensor — simplest complete pair: external sensor + Pybricks hub.
+2. Startup_diagnostics — shows startup_report and mode validation.
+3. Pybricks_multitask_hub — safe_call_multitask example.
+4. Heartbeat_stale_demo — proves heartbeat/stale-data detection.
+5. Saturn_style_bridge — project-style example based on a line sensor + external values packet.
