@@ -115,29 +115,13 @@ profiles.py
 
 ## Repository structure
 
+<!-- ASTROPUP_TREE_START -->
+
 ```text
 AstroPUP/
-├── README.md
-├── LICENSE
-├── CREDITS.md
-├── CHANGELOG.md
-├── assets/
-│   └── astrogenius-logo.png
-├── src/
-│   ├── astropup_hub.py
-│   ├── astropup_sensor.py
-│   └── lpf2.py
-├── docs/
-│   └── HEARTBEAT_GUIDE.md
-└── examples/
-    ├── 00_basic_counter_pair/
-    ├── 01_startup_diagnostics/
-    ├── 02_pybricks_multitask_reader/
-    ├── 03_heartbeat_stale_demo/
-    └── 04_saturn_style_bridge/
 ```
 
----
+<!-- ASTROPUP_TREE_END -->
 
 ## Required files
 
