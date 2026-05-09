@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/astrogenius-logo.png" alt="Astrogenius Team Logo" width="180">
+  <img src="assets/astrogenius_logo.png" alt="Astrogenius Team Logo" width="180">
 </p>
 
 <h1 align="center">AstroPUP</h1>
