@@ -119,6 +119,53 @@ profiles.py
 
 ```text
 AstroPUP/
+├── .github/
+│   └── workflows/
+│       ├── check-readme-tree.yml
+│       └── tests.yml
+├── assets/
+│   └── astrogenius_logo.png
+├── docs/
+│   ├── HARDWARE_TEST_CHECKLIST.md
+│   └── HEARTBEAT_GUIDE.md
+├── examples/
+│   ├── basic_sensor/
+│   │   ├── hub_main.py
+│   │   ├── README.md
+│   │   └── sensor_main.py
+│   ├── heartbeat_stale_demo/
+│   │   ├── hub_main.py
+│   │   ├── README.md
+│   │   └── sensor_main.py
+│   ├── pybricks_multitask_hub/
+│   │   ├── hub_main.py
+│   │   └── README.md
+│   ├── saturn_style_bridge/
+│   │   ├── hub_read_example.py
+│   │   ├── README.md
+│   │   └── sensor_lms_main_example.py
+│   ├── startup_diagnostics/
+│   │   ├── hub_main.py
+│   │   └── README.md
+│   └── README.md
+├── src/
+│   ├── astropup_hub.py
+│   ├── astropup_sensor.py
+│   └── lpf2.py
+├── tests/
+│   ├── conftest.py
+│   ├── test_command_order.py
+│   ├── test_heartbeat.py
+│   ├── test_imports.py
+│   └── test_sensor_frame_id.py
+├── tools/
+│   └── update_readme_tree.py
+├── CHANGELOG.md
+├── CONTRIBUTING.md
+├── CREDITS.md
+├── LICENSE
+├── README.md
+└── SECURITY.md
 ```
 
 <!-- ASTROPUP_TREE_END -->
