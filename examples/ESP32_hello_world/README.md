@@ -20,7 +20,7 @@ Copy these files to the ESP32:
 ```text
 src/astropup_sensor.py
 src/lpf2.py
-examples/05_esp32_hello_world/esp32_main.py  ->  main.py
+examples/esp32_hello_world/esp32_main.py  ->  main.py
 ```
 
 ## Copy to the LEGO hub
@@ -29,7 +29,7 @@ Copy these files to the LEGO hub Pybricks project:
 
 ```text
 src/astropup_hub.py
-examples/05_esp32_hello_world/hub_main.py
+examples/esp32_hello_world/hub_main.py
 ```
 
 ## Command

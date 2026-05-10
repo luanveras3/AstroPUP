@@ -21,7 +21,7 @@ Copy these files to the OpenMV board:
 ```text
 src/astropup_sensor.py
 src/lpf2.py
-examples/06_openmv_hello_camera/openmv_main.py  ->  main.py
+examples/OpenMV_hello_camera/openmv_main.py  ->  main.py
 ```
 
 ## Copy to the LEGO hub
@@ -30,7 +30,7 @@ Copy these files to the LEGO hub Pybricks project:
 
 ```text
 src/astropup_hub.py
-examples/06_openmv_hello_camera/hub_main.py
+examples/OpenMV_hello_camera/hub_main.py
 ```
 
 ## Command
