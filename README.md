@@ -141,13 +141,20 @@ AstroPUP/
 │   │   ├── hub_main.py
 │   │   ├── README.md
 │   │   └── sensor_main.py
+│   ├── LMS_ESP32_hello_world/
+│   │   ├── esp32_main.py
+│   │   ├── hub_main.py
+│   │   └── README.md
+│   ├── OpenMV_hello_camera/
+│   │   ├── hub_main.py
+│   │   ├── openmv_main.py
+│   │   └── README.md
 │   ├── pybricks_multitask_hub/
 │   │   ├── hub_main.py
 │   │   └── README.md
-│   ├── startup_diagnostics/
-│   │   ├── hub_main.py
-│   │   └── README.md
-│   └── README.md
+│   └── startup_diagnostics/
+│       ├── hub_main.py
+│       └── README.md
 ├── src/
 │   ├── astropup_hub.py
 │   ├── astropup_sensor.py
