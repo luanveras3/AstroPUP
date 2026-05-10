@@ -15,7 +15,9 @@
   <img src="https://img.shields.io/badge/status-active%20development-orange.svg" alt="Status: Active Development">
   <img src="https://img.shields.io/badge/Pybricks-compatible-brightgreen.svg" alt="Pybricks Compatible">
   <img src="https://img.shields.io/badge/MicroPython-supported-green.svg" alt="MicroPython Supported">
-  <img src="https://github.com/luanveras3/AstroPUP/actions/workflows/tests.yml/badge.svg" alt="AstroPUP Tests">
+  <a href="https://github.com/luanveras3/AstroPUP/actions/workflows/tests.yml">
+    <img src="https://github.com/luanveras3/AstroPUP/actions/workflows/tests.yml/badge.svg" alt="AstroPUP Tests">
+  </a>
 </p>
 
 <p align="center">
@@ -32,7 +34,8 @@
 
 It is designed to make communication between a LEGO hub running **Pybricks** and an external **MicroPython** device safer, easier to debug, and more reliable during robotics projects and competitions.
 
-AstroPUP does not replace PUPRemote or LPF2.  
+AstroPUP does not replace PUPRemote or LPF2.
+
 It adds a higher-level layer for:
 
 - safe calls
@@ -44,19 +47,6 @@ It adds a higher-level layer for:
 - optional heartbeat / stale-data detection
 
 ---
-## Testing
-
-AstroPUP includes automated tests for internal logic using `pytest` and GitHub Actions.
-
-These tests validate imports, heartbeat tracking, command order helpers, and sensor-side frame ID helpers.
-
-Automated tests do not replace real LPF2 / Powered Up hardware validation.
-
-For real hardware validation, see:
-
-```
-docs/HARDWARE_TEST_CHECKLIST.md
-```
 
 ## Communication model
 
@@ -69,8 +59,8 @@ External MicroPython Device  <-->  LEGO Hub running Pybricks
 Example external devices:
 
 - LMS-ESP32
-- OpenMV
 - ESP32
+- OpenMV
 - RP2040
 - other MicroPython boards capable of LPF2 / Powered Up communication
 
@@ -113,71 +103,6 @@ profiles.py
 
 ---
 
-## Repository structure
-
-<!-- ASTROPUP_TREE_START -->
-
-```text
-AstroPUP/
-├── .github/
-│   └── workflows/
-│       ├── check-readme-tree.yml
-│       └── tests.yml
-├── assets/
-│   └── astrogenius_logo.png
-├── docs/
-│   ├── HARDWARE_TEST_CHECKLIST.md
-│   └── HEARTBEAT_GUIDE.md
-├── examples/
-│   ├── astrogenius_style_bridge/
-│   │   ├── hub_read_example.py
-│   │   ├── README.md
-│   │   └── sensor_lms_main_example.py
-│   ├── basic_sensor/
-│   │   ├── hub_main.py
-│   │   ├── README.md
-│   │   └── sensor_main.py
-│   ├── heartbeat_stale_demo/
-│   │   ├── hub_main.py
-│   │   ├── README.md
-│   │   └── sensor_main.py
-│   ├── LMS_ESP32_hello_world/
-│   │   ├── esp32_main.py
-│   │   ├── hub_main.py
-│   │   └── README.md
-│   ├── OpenMV_hello_camera/
-│   │   ├── hub_main.py
-│   │   ├── openmv_main.py
-│   │   └── README.md
-│   ├── pybricks_multitask_hub/
-│   │   ├── hub_main.py
-│   │   └── README.md
-│   └── startup_diagnostics/
-│       ├── hub_main.py
-│       └── README.md
-├── src/
-│   ├── astropup_hub.py
-│   ├── astropup_sensor.py
-│   └── lpf2.py
-├── tests/
-│   ├── conftest.py
-│   ├── test_command_order.py
-│   ├── test_heartbeat.py
-│   ├── test_imports.py
-│   └── test_sensor_frame_id.py
-├── tools/
-│   ├── README_INSTRUCTIONS.md
-│   └── update_readme_tree.py
-├── CHANGELOG.md
-├── CONTRIBUTING.md
-├── CREDITS.md
-├── LICENSE
-├── README.md
-└── SECURITY.md
-```
-
-<!-- ASTROPUP_TREE_END -->
-
 ## Required files
 
 ### On the LEGO Hub
@@ -216,15 +141,14 @@ from astropup_sensor import AstroPUPSensor
 
 `lpf2.py` is the low-level LPF2 / Powered Up implementation derived from PUPRemote.
 
-Some devices already include the required LPF2/PUPRemote support.  
-Other MicroPython devices may need `lpf2.py` copied manually.
+Some devices already include the required LPF2 / PUPRemote support. Other MicroPython devices may need `lpf2.py` copied manually.
 
 | Device / Environment | Files usually needed |
 | --- | --- |
 | LEGO Hub with Pybricks | `astropup_hub.py` |
 | LMS-ESP32 with PUPRemote firmware | `astropup_sensor.py` |
+| Generic ESP32 MicroPython | `astropup_sensor.py` + `lpf2.py` |
 | OpenMV | `astropup_sensor.py` + `lpf2.py` |
-| ESP32 MicroPython | `astropup_sensor.py` + `lpf2.py` |
 | RP2040 MicroPython | `astropup_sensor.py` + `lpf2.py` |
 | Other MicroPython boards | `astropup_sensor.py` + `lpf2.py` |
 
@@ -284,7 +208,7 @@ while True:
 
 ## Command registration rule
 
-The hub side and the sensor side must register commands in the same:
+The hub side and the external device side must register commands in the same:
 
 1. order
 2. names
@@ -397,26 +321,62 @@ run_task(main())
 
 ---
 
-## Recommended workflow
+## Examples
 
-1. Start with `examples/00_basic_counter_pair`.
-2. Confirm that the hub can read values from the external device.
-3. Add `startup_report()` while debugging.
-4. Add `validate_remote_modes()` to confirm mode registration.
-5. Add heartbeat tracking only after basic communication is stable.
-6. Move robot-specific logic to your own project files.
-
----
-
-## Example projects
+Start with the simplest examples before using advanced sensors, cameras, or robot-specific packets.
 
 | Example | Purpose |
 | --- | --- |
-| `00_basic_counter_pair` | Minimal working hub/sensor pair |
-| `01_startup_diagnostics` | Startup reports and validation |
-| `02_pybricks_multitask_reader` | Pybricks multitask usage |
-| `03_heartbeat_stale_demo` | Frame tracking and stale-data detection |
-| `04_saturn_style_bridge` | Example of a more realistic bridge-style setup |
+| `examples/esp32_hello_world` | Minimal ESP32 communication test |
+| `examples/openmv_hello_camera` | Minimal OpenMV camera + communication test |
+| `examples/basic_sensor` | Generic minimal hub/sensor pair |
+| `examples/startup_diagnostics` | Startup report and mode validation |
+| `examples/pybricks_multitask_hub` | Pybricks multitask usage |
+| `examples/heartbeat_stale_demo` | Frame tracking and stale-data detection |
+| `examples/astrogenius_style_bridge` | More realistic bridge-style packet example |
+
+See:
+
+```text
+examples/README.md
+```
+
+---
+
+## Recommended workflow
+
+1. Start with `examples/esp32_hello_world` or `examples/openmv_hello_camera` if you are using real hardware.
+2. Use `examples/basic_sensor` as the generic minimal hub/sensor pair.
+3. Add `startup_report()` and `validate_remote_modes()` while debugging.
+4. Add heartbeat tracking only after basic communication is stable.
+5. Move robot-specific logic to your own project files.
+
+---
+
+## Testing
+
+AstroPUP includes automated tests for internal logic using `pytest` and GitHub Actions.
+
+These tests validate:
+
+- module imports
+- heartbeat tracking
+- command order helpers
+- sensor-side frame ID helpers
+
+Automated tests do not replace real LPF2 / Powered Up hardware validation.
+
+For real hardware validation, see:
+
+```text
+docs/HARDWARE_TEST_CHECKLIST.md
+```
+
+Run tests locally with:
+
+```bash
+pytest -q
+```
 
 ---
 
@@ -446,8 +406,7 @@ CREDITS.md
 
 AstroPUP includes code derived from PUPRemote.
 
-PUPRemote is distributed under the GPL-3.0 license.  
-AstroPUP is released under GPL-3.0-compatible terms and keeps attribution to the original PUPRemote project.
+PUPRemote is distributed under the GPL-3.0 license. AstroPUP is released under GPL-3.0-compatible terms and keeps attribution to the original PUPRemote project.
 
 See:
 
@@ -478,7 +437,7 @@ LEGO, SPIKE, MINDSTORMS, Powered Up, and related names are trademarks of their r
 Current development version:
 
 ```text
-v0.3.0
+v0.3.2
 ```
 
 AstroPUP is under active development and should be tested carefully before use in competition runs.
