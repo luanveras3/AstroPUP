@@ -3,6 +3,12 @@ All notable changes to AstroPUP will be documented in this file.
 
 The format is inspired by [Keep a Changelog](https://keepachangelog.com/), and this project follows GPL-3.0-compatible licensing due to its PUPRemote foundation.
 
+## v0.3.2
+### Added
+
+- Added minimal ESP32 Hello World example.
+- Added minimal OpenMV Hello Camera example.
+
 ---
 
 ## v0.3.1
