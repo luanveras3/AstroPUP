@@ -21,7 +21,7 @@ while True:
     data = link.safe_call("hello", default=None)
 
     if data is not None:
-        frame = data[0]
+        frame = data
         print("OpenMV answered. Frame:", frame)
     else:
         print("No answer from OpenMV.")
