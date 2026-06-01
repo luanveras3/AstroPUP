@@ -87,7 +87,7 @@ __pupremote_status__ = "Production"
 
 # AstroPUP project metadata.
 __project__ = "AstroPUP"
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 __author__ = "Luan Veras / Astrogenius"
 __maintainer__ = "Luan Veras"
 __instagram__ = "@astrogenius.team"
@@ -96,6 +96,7 @@ __license__ = "GPL-3.0 compatible; includes code derived from PUPRemote"
 
 import ustruct as struct
 from pybricks.iodevices import PUPDevice
+from pybricks.parameters import Port
 from pybricks.tools import wait, run_task
 from micropython import const
 
@@ -117,15 +118,127 @@ CALLBACK = const(0)
 CHANNEL = const(1)
 
 
+def safe_literal(data):
+    """Safely parse a small Python literal WITHOUT eval().
+
+    Supports the data the PUPRemote 'repr' mode actually sends: ints,
+    floats, bools, None, strings, and flat tuples/lists of those.
+    Anything it cannot parse safely is returned as a plain string, so a
+    corrupted packet can never execute code on the hub.
+    """
+    if isinstance(data, (bytes, bytearray)):
+        try:
+            text = bytes(data).decode("utf-8")
+        except Exception:
+            return ""
+    else:
+        text = data
+    text = text.strip()
+    if text == "":
+        return ""
+    return _parse_value(text)
+
+
+def _parse_value(text):
+    text = text.strip()
+    # Containers
+    if (text[:1] == "(" and text[-1:] == ")") or (text[:1] == "[" and text[-1:] == "]"):
+        inner = text[1:-1].strip()
+        if inner.endswith(","):
+            inner = inner[:-1].strip()
+        if inner == "":
+            return () if text[:1] == "(" else []
+        parts = _split_top_level(inner)
+        items = [_parse_value(p) for p in parts]
+        return tuple(items) if text[:1] == "(" else items
+    # Strings
+    if len(text) >= 2 and text[0] in ("'", '"') and text[-1] == text[0]:
+        return text[1:-1]
+    # Keywords
+    if text == "None":
+        return None
+    if text == "True":
+        return True
+    if text == "False":
+        return False
+    # Numbers
+    try:
+        return int(text)
+    except (ValueError, TypeError):
+        pass
+    try:
+        return float(text)
+    except (ValueError, TypeError):
+        pass
+    # Unknown -> return as raw text rather than executing it.
+    return text
+
+
+def _split_top_level(inner):
+    """Split a comma list ignoring commas inside nested quotes/brackets."""
+    parts = []
+    depth = 0
+    quote = None
+    current = ""
+    for ch in inner:
+        if quote:
+            current += ch
+            if ch == quote:
+                quote = None
+        elif ch in ("'", '"'):
+            quote = ch
+            current += ch
+        elif ch in ("(", "["):
+            depth += 1
+            current += ch
+        elif ch in (")", "]"):
+            depth -= 1
+            current += ch
+        elif ch == "," and depth == 0:
+            parts.append(current)
+            current = ""
+        else:
+            current += ch
+    if current.strip() != "":
+        parts.append(current)
+    return parts
+
+
+# Safe port lookup. Replaces eval("Port." + ...) which could execute
+# arbitrary code and also crashed if Port was not imported.
+_PORT_MAP = {
+    "A": Port.A, "B": Port.B, "C": Port.C,
+    "D": Port.D, "E": Port.E, "F": Port.F,
+}
+
+
+def resolve_port(port):
+    """Resolve a port given as a Port object, a letter ('A'), or a number (1=A).
+
+    Raises ValueError on anything unknown instead of running eval().
+    """
+    # Already a Port object.
+    if port in _PORT_MAP.values():
+        return port
+    if isinstance(port, str):
+        key = port.strip().upper()
+        if key in _PORT_MAP:
+            return _PORT_MAP[key]
+        raise ValueError("Unknown port letter: {}".format(port))
+    if isinstance(port, int):
+        key = chr(64 + port)  # 1 -> 'A', 2 -> 'B', ...
+        if key in _PORT_MAP:
+            return _PORT_MAP[key]
+        raise ValueError("Unknown port number: {}".format(port))
+    raise ValueError("Unsupported port value: {}".format(port))
+
+
 def connect(port):
     """
     Connect to LMS-ESP32. Pass Port as a string ('A') or a number (1=Port.A)
     """
     global pr
-    if isinstance(port, str):
-        pyport = eval("Port." + port)
-    if isinstance(port, int):
-        pyport = eval("Port." + chr(64 + port))
+    pyport = resolve_port(port)
     pr = PUPRemoteHub(pyport)
 
 
@@ -254,7 +367,7 @@ class PUPRemote:
     def decode(self, fmt: str, data: bytes):
         if fmt == "repr":
             clean = data.rstrip(b"\x00")
-            return (eval(clean),) if clean else ("",)
+            return (safe_literal(clean),) if clean else ("",)
         else:
             size = struct.calcsize(fmt)
             data = struct.unpack(fmt, data[:size])
@@ -523,6 +636,13 @@ class AstroPUPHub:
         self._same_frame_limit = 1
         self._same_frame_repeats = 0
 
+        # Auto-reconnect state.
+        # After this many consecutive failed calls, safe_call() tries to
+        # rebuild the PUPDevice connection by itself. 0 disables it.
+        self._reconnect_after = 5
+        self._consecutive_fails = 0
+        self._reconnect_count = 0
+
     # --------------------------------------------------------
     # Command registration
     # --------------------------------------------------------
@@ -649,7 +769,8 @@ class AstroPUPHub:
         """Safe synchronous call.
 
         If the call fails, this returns default and stores the error code.
-        Use this outside Pybricks multitask routines.
+        After several consecutive failures it tries to reconnect on its own
+        (see reconnect_after()). Use this outside Pybricks multitask routines.
         """
         self._call_count += 1
 
@@ -665,12 +786,14 @@ class AstroPUPHub:
             self._last_response = response
             self._last_good_response = response
             self._success_count += 1
+            self._consecutive_fails = 0
             return response
 
         except OSError as e:
             self._last_error = ASTRO_ERR_OS
             self._last_exception = e
             self._fail_count += 1
+            self._on_failure()
             return default
 
         except AssertionError as e:
@@ -678,13 +801,74 @@ class AstroPUPHub:
             self._last_error = ASTRO_ERR_NOT_RUNNING_ASYNC
             self._last_exception = e
             self._fail_count += 1
+            self._on_failure()
             return default
 
         except Exception as e:
             self._last_error = ASTRO_ERR_UNKNOWN
             self._last_exception = e
             self._fail_count += 1
+            self._on_failure()
             return default
+
+    # --------------------------------------------------------
+    # Auto-reconnect
+    # --------------------------------------------------------
+    def reconnect_after(self, n):
+        """Set how many consecutive failures trigger an auto-reconnect.
+
+        Pass 0 to disable automatic reconnection. Default is 5.
+        """
+        self._reconnect_after = n
+
+    def reconnect_count(self):
+        """Return how many times AstroPUP rebuilt the connection."""
+        return self._reconnect_count
+
+    def consecutive_fails(self):
+        """Return the current streak of consecutive failed calls."""
+        return self._consecutive_fails
+
+    def _on_failure(self):
+        """Track a failure streak and reconnect when it crosses the threshold."""
+        self._consecutive_fails += 1
+        if self._reconnect_after and self._consecutive_fails >= self._reconnect_after:
+            self.reconnect()
+
+    def reconnect(self):
+        """Rebuild the underlying PUPDevice and re-register all commands.
+
+        Returns True on success, False if the device is still unreachable.
+        The command order is preserved so the remote-mode validation still
+        lines up after a reconnect.
+        """
+        if self.debug:
+            print("ASTROPUP: attempting reconnect on", self.port)
+        try:
+            saved = list(self._command_order)
+            saved_specs = dict(self._commands)
+
+            new_pup = PUPRemoteHub(self.port, max_packet_size=self.max_packet_size)
+            # Re-register commands in the original order.
+            for name in saved:
+                to_hub_fmt, from_hub_fmt = saved_specs[name]
+                new_pup.add_command(name, to_hub_fmt=to_hub_fmt, from_hub_fmt=from_hub_fmt)
+
+            self._pup = new_pup
+            self._consecutive_fails = 0
+            self._reconnect_count += 1
+            self._last_error = ASTRO_OK
+            self._last_exception = None
+            if self.debug:
+                print("ASTROPUP: reconnect OK (count=", self._reconnect_count, ")")
+            return True
+
+        except Exception as e:
+            self._last_error = ASTRO_ERR_OS
+            self._last_exception = e
+            if self.debug:
+                print("ASTROPUP: reconnect failed:", e)
+            return False
 
     # --------------------------------------------------------
     # Async / multitask calls

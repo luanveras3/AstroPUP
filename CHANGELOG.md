@@ -3,6 +3,29 @@ All notable changes to AstroPUP will be documented in this file.
 
 The format is inspired by [Keep a Changelog](https://keepachangelog.com/), and this project follows GPL-3.0-compatible licensing due to its PUPRemote foundation.
 
+## v0.4.0
+### Security / robustness
+
+- Removed `eval()` from the data path. The `"repr"` format now decodes through a new `safe_literal()` parser that handles numbers, strings, booleans, `None`, tuples, and lists without executing arbitrary code. A corrupted or hostile payload on the wire can no longer run code on either side.
+- Replaced `eval("Port." + ...)` in `connect()` with a `resolve_port()` lookup table that accepts a letter, a number, or an already-built `Port`. This also fixes a latent bug where `Port` was used without being imported.
+
+### Added
+
+- `AstroPUPHub` automatic reconnection. After N consecutive failed `safe_call()` invocations (default 5), the hub rebuilds the underlying `PUPDevice` and re-registers every command in the original order. A successful call resets the failure streak.
+  - `hub.reconnect_after(n)` to change the threshold (pass `0` to disable).
+  - `hub.reconnect()` to force a reconnection manually.
+  - `hub.reconnect_count()` to inspect how many times the link rebuilt itself.
+  - `hub.consecutive_fails()` to read the current failure streak.
+- `tests/test_improvements_v04.py` covering `safe_literal`, `resolve_port`, and the auto-reconnect flow.
+- `tests/conftest.py` now mocks `pybricks.parameters.Port` and lets tests pre-populate `FakePUPDevice.advertised_modes` so reconnect tests can register commands.
+
+### Notes
+
+- Reconnect is enabled by default. Pass `reconnect_after=0` (or call `hub.reconnect_after(0)`) if you want the old fail-fast behaviour.
+- The `"repr"` data format is still supported but `struct` formats (`B`, `h`, `hh`, `hhhh`...) are recommended for any production link.
+
+---
+
 ## v0.3.2
 ### Added
 

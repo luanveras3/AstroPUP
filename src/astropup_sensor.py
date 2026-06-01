@@ -69,7 +69,7 @@
 #
 # ============================================================
 
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 __project__ = "AstroPUP"
 __team__ = "Astrogenius - Brazil"
 __instagram__ = "@astrogenius.team"
@@ -138,6 +138,85 @@ CALLBACK = const(0)
 CHANNEL = const(1)
 
 
+def safe_literal(data):
+    """Safely parse a small Python literal WITHOUT eval().
+
+    Mirror of the hub-side parser. Supports ints, floats, bools, None,
+    strings, and flat tuples/lists. A corrupted packet can never execute
+    code on the device.
+    """
+    if isinstance(data, (bytes, bytearray)):
+        try:
+            text = bytes(data).decode("utf-8")
+        except Exception:
+            return ""
+    else:
+        text = data
+    text = text.strip()
+    if text == "":
+        return ""
+    return _parse_value(text)
+
+
+def _parse_value(text):
+    text = text.strip()
+    if (text[:1] == "(" and text[-1:] == ")") or (text[:1] == "[" and text[-1:] == "]"):
+        inner = text[1:-1].strip()
+        if inner.endswith(","):
+            inner = inner[:-1].strip()
+        if inner == "":
+            return () if text[:1] == "(" else []
+        parts = _split_top_level(inner)
+        items = [_parse_value(p) for p in parts]
+        return tuple(items) if text[:1] == "(" else items
+    if len(text) >= 2 and text[0] in ("'", '"') and text[-1] == text[0]:
+        return text[1:-1]
+    if text == "None":
+        return None
+    if text == "True":
+        return True
+    if text == "False":
+        return False
+    try:
+        return int(text)
+    except (ValueError, TypeError):
+        pass
+    try:
+        return float(text)
+    except (ValueError, TypeError):
+        pass
+    return text
+
+
+def _split_top_level(inner):
+    parts = []
+    depth = 0
+    quote = None
+    current = ""
+    for ch in inner:
+        if quote:
+            current += ch
+            if ch == quote:
+                quote = None
+        elif ch in ("'", '"'):
+            quote = ch
+            current += ch
+        elif ch in ("(", "["):
+            depth += 1
+            current += ch
+        elif ch in (")", "]"):
+            depth -= 1
+            current += ch
+        elif ch == "," and depth == 0:
+            parts.append(current)
+            current = ""
+        else:
+            current += ch
+    if current.strip() != "":
+        parts.append(current)
+    return parts
+
+
 class PUPRemote:
     """Base command/format encoder used by PUPRemoteSensor."""
 
@@ -187,7 +266,7 @@ class PUPRemote:
         if fmt == "repr":
             clean = bytearray([c for c in data if c != 0])
             if clean:
-                return (eval(clean),)
+                return (safe_literal(clean),)
             return ("",)
         size = struct.calcsize(fmt)
         return struct.unpack(fmt, data[:size])

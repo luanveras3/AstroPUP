@@ -32,15 +32,38 @@ sys.modules.setdefault("ustruct", struct)
 pybricks = types.ModuleType("pybricks")
 pybricks_iodevices = types.ModuleType("pybricks.iodevices")
 pybricks_tools = types.ModuleType("pybricks.tools")
+pybricks_parameters = types.ModuleType("pybricks.parameters")
+
+
+class _Port:
+    """Stand-in for pybricks.parameters.Port enum."""
+    A = "Port.A"
+    B = "Port.B"
+    C = "Port.C"
+    D = "Port.D"
+    E = "Port.E"
+    F = "Port.F"
+
+
+pybricks_parameters.Port = _Port
 
 
 class FakePUPDevice:
-    """Small fake PUPDevice used only for unit tests."""
+    """Small fake PUPDevice used only for unit tests.
+
+    Tests that exercise add_command (which validates against advertised
+    modes) can populate FakePUPDevice.advertised_modes with a list of
+    (name, size) tuples before constructing the hub. Any new instance
+    created afterwards — including those built during auto-reconnect —
+    snapshots the same list, so the validation lines up across reconnects.
+    """
+
+    advertised_modes = []
 
     def __init__(self, port=None):
         self.port = port
         self.writes = []
-        self._modes = []
+        self._modes = list(FakePUPDevice.advertised_modes)
         self._read_data = {}
 
     def info(self):
@@ -68,6 +91,12 @@ pybricks_tools.run_task = run_task
 sys.modules.setdefault("pybricks", pybricks)
 sys.modules.setdefault("pybricks.iodevices", pybricks_iodevices)
 sys.modules.setdefault("pybricks.tools", pybricks_tools)
+sys.modules.setdefault("pybricks.parameters", pybricks_parameters)
+# Make 'pybricks' behave as a package so 'from pybricks.parameters import Port' works.
+pybricks.__path__ = []
+pybricks.iodevices = pybricks_iodevices
+pybricks.tools = pybricks_tools
+pybricks.parameters = pybricks_parameters
 
 
 # LPF2 compatibility --------------------------------------------------------
