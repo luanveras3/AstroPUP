@@ -84,15 +84,27 @@ If the command order or format does not match, communication will fail or return
 
 Start with the simplest examples first.
 
+### Foundations
+
 | Order | Example | Purpose |
 | --- | --- | --- |
-| 1 | `ESP32_hello_world` | Minimal ESP32 communication test |
+| 1 | `ESP32_hello_world` | Minimal generic-ESP32 communication test |
 | 2 | `OpenMV_hello_camera` | Minimal OpenMV camera + communication test |
 | 3 | `basic_sensor` | Generic minimal hub/sensor pair |
 | 4 | `startup_diagnostics` | Startup report and mode validation |
 | 5 | `pybricks_multitask_hub` | Pybricks multitask reading example |
 | 6 | `heartbeat_stale_demo` | Heartbeat and stale-data detection |
-| 7 | `astrogenius_style_bridge` | More realistic bridge-style example |
+| 7 | `astrogenius_style_bridge` | Realistic packet shape with multiple values |
+
+### LMS-ESP32 (Anton's Mindstorms board)
+
+| Order | Example | Purpose |
+| --- | --- | --- |
+| 8 | `LMS_ESP32_hello_world` | Minimal example for the pre-flashed LMS-ESP32 board |
+| 9 | `LMS_ESP32_uart_bridge` | Use the LMS-ESP32 as a transparent UART bridge for any external device |
+| 10 | `LMS_ESP32_camera_bridge` | Full chain: OpenMV camera -> LMS-ESP32 bridge -> LEGO hub |
+
+The LMS-ESP32 examples skip `lpf2.py` because the board ships pre-flashed with PUPRemote firmware that already provides it.
 
 ---
 
@@ -125,6 +137,18 @@ Demonstrates AstroPUP heartbeat / stale-data tracking. Use this to check whether
 ### `astrogenius_style_bridge`
 
 A more realistic bridge-style example. It shows how a project can send a packet with multiple values, such as `frame_id, error, junction, button, c1, c2, c3, c4`. This is only a pattern - robot-specific meanings should stay outside AstroPUP Core.
+
+### `LMS_ESP32_hello_world`
+
+Minimal example for the **LMS-ESP32** board (Anton's Mindstorms ESP32 with built-in LPF2/WeDo connector and pre-flashed PUPRemote firmware). Highlights the conveniences of the board: no firmware flashing, no `lpf2.py` copy, and a flat LPF2 cable straight into the LEGO hub.
+
+### `LMS_ESP32_uart_bridge`
+
+Use the LMS-ESP32 as a **transparent UART bridge** for any external device (another MicroPython board, an Arduino, a custom sensor with UART). The external device sends `value,frame_id\n` over UART, the LMS-ESP32 forwards it to the hub. Includes an `external_device_simulator.py` so you can try the pattern without a second device.
+
+### `LMS_ESP32_camera_bridge`
+
+Full chain showing an **OpenMV camera reaching the LEGO hub through an LMS-ESP32 bridge**. The OpenMV does all the computer vision (`find_blobs`, drawing, thresholds) and only sends a small result line. The LMS-ESP32 forwards. The hub never talks to the camera directly. Generic blob tracker - not tied to any competition.
 
 ---
 
